@@ -1,0 +1,66 @@
+class Solution {
+    public List<String> fullJustify(String[] words, int maxWidth) {
+    
+        int left = 0;
+        List<String> result = new ArrayList<>();
+        
+        while(left < words.length){
+            int right = findRight(left, words, maxWidth);
+            result.add(justify(left, right, words, maxWidth));
+            left = right + 1;
+        }
+
+        return result;
+    }
+
+    private int findRight(int left, String[] words, int maxWidth){
+        int right = left;
+        int sum = words[right++].length();
+
+        while( right < words.length && (sum + 1 + words[right].length()) <= maxWidth){
+            sum += 1 + words[right++].length();
+        }
+        return right-1;
+    }
+
+    private String justify(int left, int right, String[] words, int maxWidth){
+        if(left == right) return padResult(words[left], maxWidth);
+        
+        boolean isLastLine = right == words.length-1;
+        int numSpaces = right-left;
+        int totalSpaces = maxWidth - wordsLength(left, right, words);
+
+        String space = isLastLine ? " " : blank(totalSpaces/numSpaces);
+        int remainder = isLastLine ? 0 : totalSpaces%numSpaces;
+
+        StringBuilder line = new StringBuilder();
+        for(int i = left; i<=right; i++){
+            line.append(words[i]).append(space).append(remainder-- > 0? " " : "");
+        }
+        return padResult(line.toString().trim(), maxWidth);
+    }
+
+    private String padResult(String result, int maxWidth){
+        return result + blank(maxWidth-result.length());
+    }
+
+
+    private String blank(int numSpaces){
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<numSpaces; i++){
+            sb.append(" ");
+        }
+        return sb.toString();
+
+        // or just do return " ".repeat(numSpaces);
+    }
+
+    private int wordsLength(int left, int right, String[] words){
+        int wordlength = 0;
+        for(int i = left; i <= right; i++){
+            wordlength += words[i].length(); 
+        }
+        return wordlength;
+    }
+
+}
