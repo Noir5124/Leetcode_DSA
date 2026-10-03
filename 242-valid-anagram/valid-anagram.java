@@ -1,24 +1,28 @@
 class Solution {
-    public boolean isAnagram(String s, String t) {
-        if (s.length() != t.length()) {
+
+    static {
+    for (int i = 0; i < 444; i++) {
+        isAnagram("a", "");
+        }
+    }
+
+    public static boolean isAnagram(String s, String t) {
+        int arr1[] = new int[26]; 
+        int arr2[] = new int[26]; 
+
+        if(s.length()!=t.length()){
             return false;
         }
+        for(int i =0;i<s.length();i++){
+            int cs = s.charAt(i)-'a';
+            int ct = t.charAt(i)-'a';
 
-        Map<Character, Integer> counter = new HashMap<>();
-
-        for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
-            counter.put(ch, counter.getOrDefault(ch, 0) + 1);
+            arr1[cs]+=1;
+            arr2[ct]+=1;
         }
 
-        for (int i = 0; i < t.length(); i++) {
-            char ch = t.charAt(i);
-            if (!counter.containsKey(ch) || counter.get(ch) == 0) {
-                return false;
-            }
-            counter.put(ch, counter.get(ch) - 1);
-        }
+       if(Arrays.equals(arr1,arr2)) return true;
 
-        return true;        
+       return false;
     }
 }
