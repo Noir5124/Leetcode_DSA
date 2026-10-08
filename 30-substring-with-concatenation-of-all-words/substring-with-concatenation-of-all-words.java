@@ -1,89 +1,49 @@
 class Solution {
     public List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> ans = new ArrayList<>();
+        HashMap<String, Integer> orgCount = new HashMap<>();
+        
+        if(words.length == 0 || s.length() == 0) return ans;
 
-        List<Integer> result = new ArrayList<>();
-
-        if (s.length() == 0 || words.length == 0) {
-            return result;
+        for(String word:words){
+            orgCount.put(word, orgCount.getOrDefault(word,0)+1);
         }
 
         int wordLen = words[0].length();
-        int wordCount = words.length;
-        int totalLen = wordLen * wordCount;
+        int wordSize = words.length;
+        int N = s.length();
 
-        if (s.length() < totalLen) {
-            return result;
-        }
-
-        Map<String, Integer> required = new HashMap<>();
-
-        for (String word : words) {
-            required.put(word, required.getOrDefault(word, 0) + 1);
-        }
-
-        for (int offset = 0; offset < wordLen; offset++) {
-
-            int left = offset;
-            int right = offset;
-
+        for(int offset = 0; offset < wordLen; offset++){
+            int start = offset;
+            HashMap<String, Integer> currCount = new HashMap<>();
             int count = 0;
-
-            Map<String, Integer> window = new HashMap<>();
-
-            while (right + wordLen <= s.length()) {
-
-                String word = s.substring(right, right + wordLen);
-
-                right += wordLen;
-
-                if (!required.containsKey(word)) {
-
-                    window.clear();
-                    count = 0;
-                    left = right;
-
-                } else {
-
-                    window.put(
-                        word,
-                        window.getOrDefault(word, 0) + 1
-                    );
-
+            
+            for(int end = offset; end + wordLen <= N; end += wordLen ){
+                String currWord = s.substring(end, end+wordLen);
+                if(orgCount.containsKey(currWord)){
+                    currCount.put(currWord, currCount.getOrDefault(currWord,0)+1);
                     count++;
 
-                    while (window.get(word) > required.get(word)) {
-
-                        String leftWord =
-                            s.substring(left, left + wordLen);
-
-                        window.put(
-                            leftWord,
-                            window.get(leftWord) - 1
-                        );
-
-                        left += wordLen;
+                    while(currCount.get(currWord)>orgCount.get(currWord)){
+                        String startWord = s.substring(start,start+wordLen);
+                        currCount.put(startWord, currCount.get(startWord)-1);
                         count--;
+                        start += wordLen;
                     }
 
-                    if (count == wordCount) {
-
-                        result.add(left);
-
-                        String leftWord =
-                            s.substring(left, left + wordLen);
-
-                        window.put(
-                            leftWord,
-                            window.get(leftWord) - 1
-                        );
-
-                        left += wordLen;
-                        count--;
+                    if(count==wordSize){
+                        ans.add(start);
                     }
+                }
+
+                else{
+                    count=0;
+                    start = end + wordLen;
+                    currCount.clear();
                 }
             }
         }
 
-        return result;
+        return ans;
     }
 }
