@@ -1,28 +1,29 @@
 class Solution {
     public boolean isValidSudoku(char[][] board) {
-        Set<String> seen = new HashSet<>();
+        boolean[][] rowRay = new boolean[9][9];
+        boolean[][] colRay = new boolean[9][9];
+        boolean[][] boxRay = new boolean[9][9];
 
-        for(int i = 0; i < 9; i++){
+        for(int i=0; i<9; i++){
             for(int j=0; j<9; j++){
-                char num = board[i][j];
+
+                if(board[i][j] != '.'){
                     
-                if(num == '.') continue;
+                    int num = board[i][j] - '1';
+                    int boxIndex = (i/3)*3 + (j/3);
+                     
+                    if(rowRay[i][num] || colRay[j][num] || boxRay[boxIndex][num]){
+                        return false;
+                    }
+                    
+                    rowRay[i][num] = true;
+                    colRay[j][num] = true;
+                    boxRay[boxIndex][num] = true;
 
-                int boxIndex = (i/3)*3 + (j/3);
-
-                String rowKey = num + "in row" + i;
-                String colKey = num + "in col" + j;
-                String boxKey = num + "in box" + boxIndex;
-                
-                if(seen.contains(rowKey) || seen.contains(colKey) || seen.contains(boxKey)){
-                    return false;
                 }
-
-                seen.add(rowKey);
-                seen.add(colKey);
-                seen.add(boxKey);
             }
         }
         return true;
+
     }
 }
